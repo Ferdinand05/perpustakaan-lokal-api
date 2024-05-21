@@ -1,0 +1,720 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Perpustakaan API",
+        "description": "REST API kumpulan buku yang ada di indonesia",
+        "version": "1.0",
+        "contact": {
+            "name": "Ferdinand",
+            "email": "fkoryanto@gmail.com"
+        }
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000/api",
+            "description": "Perpustakaan API",
+            "variables": {
+                "enviroment": {
+                    "default": "developer"
+                }
+            }
+        }
+    ],
+    "externalDocs": {
+        "url": "Ferdinand05.github.io",
+        "description": "API Documentation"
+    },
+    "paths": {
+        "/buku": {
+            "get": {
+                "description": "Mendapatkan semua Buku",
+                "summary": "List buku",
+                "tags": ["Buku"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "Filter buku dari ID",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "nullable": true,
+                            "minLength": 1
+                        },
+                        "required": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success! mendapatkan list buku",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "string"
+                                            },
+                                            "judul": {
+                                                "type": "string"
+                                            },
+                                            "id_kategori": {
+                                                "type": "integer",
+                                                "default": 1
+                                            },
+                                            "penerbit": {
+                                                "type": "string"
+                                            },
+                                            "tahun_terbit": {
+                                                "type": "string"
+                                            },
+                                            "sampul": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "Berhasil mendapatkan List buku",
+                                        "value": [
+                                            {
+                                                "id": 1,
+                                                "judul": "Bumi Manusia",
+                                                "id_kategori": 1,
+                                                "penerbit": "Gramedia",
+                                                "tahun_terbit": "2002",
+                                                "sampul": "bumi_manusia.jpg"
+                                            },
+                                            {
+                                                "id": 2,
+                                                "judul": "Laskar Pelangi",
+                                                "id_kategori": 2,
+                                                "penerbit": "Gramedia",
+                                                "tahun_terbit": "2003",
+                                                "sampul": "laskarpelangi.jpg"
+                                            }
+                                        ]
+                                    },
+                                    "error": {
+                                        "value": {
+                                            "message": "error message"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Membuat buku baru",
+                "summary": "create buku",
+                "tags": ["Buku"],
+                "security": [
+                    {
+                        "Auth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "create buku baru",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "judul": {
+                                        "type": "string"
+                                    },
+                                    "id_kategori": {
+                                        "type": "integer"
+                                    },
+                                    "penerbit": {
+                                        "type": "string"
+                                    },
+                                    "tahun_terbit": {
+                                        "type": "string"
+                                    },
+                                    "sampul": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "judul",
+                                    "id_kategori",
+                                    "penerbit",
+                                    "tahun_terbit"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Success membuat buku baru",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "default": 1
+                                        },
+                                        "judul": {
+                                            "type": "string"
+                                        },
+                                        "id_kategori": {
+                                            "type": "integer",
+                                            "format": "int32"
+                                        },
+                                        "penerbit": {
+                                            "type": "string"
+                                        },
+                                        "tahun_terbit": {
+                                            "type": "string"
+                                        },
+                                        "sampul": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "success create buku",
+                                        "value": [
+                                            {
+                                                "id": 1,
+                                                "judul": "Bumi manusia",
+                                                "id_kategori": 1,
+                                                "penerbit": "Gramedia",
+                                                "tahun_terbit": "2002",
+                                                "sampul": "bumimanusia.png"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/buku/{id}": {
+            "put": {
+                "summary": "Update buku",
+                "description": "Update buku terpilih",
+                "tags": ["Buku"],
+                "security": [
+                    {
+                        "Auth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "minLength": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "default": 1
+                                    },
+                                    "judul": {
+                                        "type": "string"
+                                    },
+                                    "id_kategori": {
+                                        "type": "integer"
+                                    },
+                                    "penerbit": {
+                                        "type": "string"
+                                    },
+                                    "tahun_terbit": {
+                                        "type": "string"
+                                    },
+                                    "sampul": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": ["id"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success update Buku",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "judul": {
+                                            "type": "string"
+                                        },
+                                        "id_kategori": {
+                                            "type": "integer",
+                                            "default": 1
+                                        },
+                                        "penerbit": {
+                                            "type": "string"
+                                        },
+                                        "tahun_terbit": {
+                                            "type": "string"
+                                        },
+                                        "sampul": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "Success mengupdate buku",
+                                        "value": [
+                                            {
+                                                "id": 1,
+                                                "judul": "Bumi Manusia",
+                                                "id_kategori": 2,
+                                                "penerbit": "Kompas",
+                                                "tahun_terbit": "2003",
+                                                "sampul": "bumimanusia.jpeg"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete buku",
+                "summary": "delete buku",
+                "tags": ["Buku"],
+                "security": [
+                    {
+                        "Auth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "minLength": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request untuk melakukan delete Buku",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int32",
+                                        "default": 1
+                                    }
+                                },
+                                "required": ["id"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Buku berhasil dihapus",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "format": "int32",
+                                            "default": 1
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "berhasil menghapus buku",
+                                        "value": [
+                                            {
+                                                "message": "Buku berhasil Dihapus"
+                                            }
+                                        ]
+                                    },
+                                    "error": {
+                                        "description": "Error saat mengapus buku",
+                                        "value": [
+                                            {
+                                                "message": "Error message"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/kategori": {
+            "get": {
+                "description": "Mendapatkan semua kategori buku",
+                "summary": "list buku",
+                "tags": ["Kategori"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minLength": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "mendapatkan semua Kategori Buku",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "format": "int32"
+                                            },
+                                            "nama": {
+                                                "type": "string"
+                                            },
+                                            "created_at": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "list kategori buku",
+                                        "value": [
+                                            {
+                                                "id": 1,
+                                                "nama": "Novel",
+                                                "created_at": "05 may 2024"
+                                            },
+                                            {
+                                                "id": 2,
+                                                "nama": "Ensiklopedia",
+                                                "created_at": "05 may 2024"
+                                            },
+                                            {
+                                                "id": 3,
+                                                "nama": "Pengetahuan Alam",
+                                                "created_at": "05 may 2024"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Membuat Kategori baru",
+                "summary": "create kategori",
+                "tags": ["Kategori"],
+                "security": [
+                    {
+                        "Auth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nama": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": ["nama"]
+                            },
+                            "examples": {
+                                "example": {
+                                    "description": " membuat kategori baru",
+                                    "value": [
+                                        {
+                                            "nama": "Pengetahuan Alam"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Success membuat kategori baru",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "format": "int32"
+                                        },
+                                        "nama": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "SUCCESS! membuat kategori baru",
+                                        "value": [
+                                            {
+                                                "id": 1,
+                                                "nama": "Tutorial"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/kategori/{id}": {
+            "put": {
+                "description": "mengUpdate data kategori",
+                "summary": "update kategori",
+                "tags": ["Kategori"],
+                "security": [
+                    {
+                        "Auth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "minLength": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int32"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success Update Kategori",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer"
+                                        },
+                                        "nama": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "Success update kategori",
+                                        "value": [
+                                            {
+                                                "id": 1,
+                                                "nama": "Biografi"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Menghapus data kategori",
+                "summary": "Delete kategori",
+                "tags": ["Kategori"],
+                "security": [
+                    {
+                        "Auth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "minLength": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int32",
+                                        "default": 1,
+                                        "minLength": 1
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "delete data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "format": "int32",
+                                            "default": 1,
+                                            "minLength": 1
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "success delete kategori",
+                                        "value": [
+                                            {
+                                                "message": "Kategori telah dihapus"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "description": "mendapatkan semua data user",
+                "summary": "list user",
+                "tags": ["User"],
+                "security": [
+                    {
+                        "Auth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minLength": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "berhasil mendapatkan data user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "string"
+                                            },
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "email": {
+                                                "type": "string"
+                                            },
+                                            "created_at": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "Auth": {
+                "type": "apiKey",
+                "in": "header",
+                "description": "authentikasi user",
+                "name": "token"
+            }
+        }
+    }
+}
