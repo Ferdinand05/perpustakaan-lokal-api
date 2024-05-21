@@ -17,6 +17,7 @@ class KategoriResource extends JsonResource
         return [
             'id' => $this->id,
             'nama_kategori' => $this->nama_kategori,
+            'jumlah_buku' => $this->buku->count(),
             'created_at' => $this->created_at->toFormattedDateString()
         ];
     }

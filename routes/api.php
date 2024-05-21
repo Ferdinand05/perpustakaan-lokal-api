@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 // buku
 Route::get('/buku', [BukuController::class, 'index'])->name('buku.index');
+Route::post('/buku', [BukuController::class, 'store'])->name('buku.store');
 
 
 // Kategori Buku
