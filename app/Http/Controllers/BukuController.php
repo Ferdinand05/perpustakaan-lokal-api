@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BukuRequest;
 use App\Http\Resources\BukuResource;
 use App\Models\Buku;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class BukuController extends Controller
 {
@@ -18,20 +20,24 @@ class BukuController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * store new buku.
      */
-    public function create()
+    public function store(BukuRequest $request)
     {
-        //
+
+        $image = $request->file('sampul');
+        if ($image) {
+            $randomName = Str::random(15);
+            $imageExtension = $image->extension();
+
+            $imageName = $randomName . '.' . $imageExtension;
+            $sampul = $image->storeAs('image-buku', $imageName);
+            return $imageName;
+        } else {
+            return 'kosong';
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
     /**
      * Display the specified resource.
