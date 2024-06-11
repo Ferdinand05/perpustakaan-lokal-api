@@ -6,6 +6,7 @@ use App\Http\Requests\BukuRequest;
 use App\Http\Resources\BukuResource;
 use App\Models\Buku;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class BukuController extends Controller
@@ -31,43 +32,79 @@ class BukuController extends Controller
             $imageExtension = $image->extension();
 
             $imageName = $randomName . '.' . $imageExtension;
-            $sampul = $image->storeAs('image-buku', $imageName);
-            return $imageName;
+            $image->storeAs('image-buku', $imageName);
         } else {
-            return 'kosong';
+            $imageName = null;
         }
+
+        $buku = Buku::create([
+            'judul' => $request->judul,
+            'pengarang' => $request->pengarang,
+            'id_kategori' => $request->id_kategori,
+            'penerbit' => $request->penerbit,
+            'tahun_terbit' => $request->tahun_terbit,
+            'sampul' => $imageName
+        ]);
+
+        return new BukuResource($buku);
     }
 
 
     /**
      * Display the specified resource.
      */
-    public function show(Buku $buku)
+    public function show(Buku $buku, $id)
     {
-        //
+
+        $buku = Buku::findOrFail($id);
+
+
+
+        return new BukuResource($buku);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Buku $buku)
-    {
-        //
-    }
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Buku $buku)
+    public function update(BukuRequest $request, $id)
     {
-        //
+        $buku = Buku::findOrFail($id);
+
+        $image = $request->file('sampul');
+        if ($image) {
+            $randomName = Str::random(15);
+            $imageExtension = $image->extension();
+
+            $imageName = $randomName . '.' . $imageExtension;
+            $image->storeAs('image-buku', $imageName);
+            Storage::delete('image-buku/' . $buku->sampul);
+        } else {
+            $imageName = $buku->sampul;
+        }
+
+        $buku->update([
+            'judul' => $request->judul,
+            'pengarang' => $request->pengarang,
+            'id_kategori' => $request->id_kategori,
+            'penerbit' => $request->penerbit,
+            'tahun_terbit' => $request->tahun_terbit,
+            'sampul' => $imageName
+        ]);
+
+        return new BukuResource($buku);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Buku $buku)
+    public function destroy($id)
     {
-        //
+        $buku = Buku::findOrFail($id);
+        Storage::delete('image-buku/' . $buku->sampul);
+        $buku->delete();
+
+        return response()->json(['message' => 'Buku berhasil dihapus']);
     }
 }

@@ -12,7 +12,7 @@ class Buku extends Model
     use HasFactory;
     protected $table = 'buku';
     protected $primaryKey = 'id';
-    protected $fillable = ['judul', 'penulis', 'id_kategori', 'penerbit', 'tahun_terbit', 'sampul'];
+    protected $fillable = ['judul', 'penulis', 'id_kategori', 'penerbit', 'tahun_terbit', 'sampul', 'pengarang'];
 
 
     /**
